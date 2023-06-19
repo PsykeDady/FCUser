@@ -1,0 +1,7 @@
+spring.datasource.url=jdbc:mysql://ind.iri.zzo:porta/database?createDatabaseIfNotExist=true
+spring.datasource.username=USERNAME
+spring.datasource.password=PASSWORD
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+server.servlet.context-path=/fcuser
