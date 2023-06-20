@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.psyke.models.User;
 import co.psyke.repositories.UserRepository;
+import co.psyke.responses.UploadFileResponse;
 
 @Service
 public class UploadService {
@@ -32,12 +35,74 @@ public class UploadService {
 		return tmpFile; 
 	}
 
-	public void saveFromCsv (File f){
-		List<String> lines= Collections.EMPTY_LIST;
+	public UploadFileResponse saveFromCsv (File f){
+		UploadFileResponse ufr = new UploadFileResponse();
+		List<String> lines  = Collections.emptyList();
+		List<String> results = new LinkedList<>();
 		try {
-			lines= Files.readAllLines(Path.of(f.getAbsolutePath(), null));
+			lines= Files.readAllLines(Path.of(f.getAbsolutePath()));
 		} catch (Exception e) {
-			// TODO: handle exception
+			ufr.setStatus(-1);
+			ufr.setCsvValidation("cannot read the file:" + e.getMessage());
+			return ufr;
 		}
+		int row=0; 
+		boolean error=false;
+		for(String s : lines){
+			StringBuilder output=new StringBuilder(512).append("row "+row+ ")");
+			String [] fields = s.split(";"); 
+			if(fields.length!=4){
+				output.append("missing fields, it must be: name; last name; email;address");
+				results.add(output.toString());
+				error=true;
+			} else {
+				User u = new User();
+				if(!fieldsValidation(fields, output)) {
+					results.add(output.toString());
+					error=true;
+					continue;
+				}
+
+				u.setNome(fields[0]);
+				u.setCognome(fields[1]);
+				u.setIndirizzo(fields[2]);
+				u.setEmail(fields[3]);
+
+				Long id=ur.save(u).getId();
+				output.append(id!=null? "added":"not added");
+				
+				results.add(output.toString());
+			}
+		}
+
+		ufr.setCsvValidation(error?"some error reported":"all fine");
+		ufr.setStatus(error?0:1);
+		ufr.setRowByRowValidation(results);
+		return ufr;
+	}
+
+	private static boolean fieldsValidation(String[]fields, StringBuilder sb) {
+		boolean flag=true;
+		if(fields[0].isEmpty()){
+			sb.append("empty first name");
+			flag=false;
+		}
+		if(fields[1].isEmpty()){
+			sb.append("empty last name");
+			flag=false;
+		}
+		if(fields[2].isEmpty()){
+			sb.append("empty email field");
+			flag=false;
+		}
+		if(!fields[2].matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")){
+			sb.append("empty email field");
+			flag=false;
+		}
+		if(fields[3].isEmpty()){
+			sb.append("empty address field");
+			flag=false;
+		}
+		return flag; 
 	}
 }

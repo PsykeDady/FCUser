@@ -1,7 +1,5 @@
 package co.psyke.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
