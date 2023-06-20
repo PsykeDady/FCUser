@@ -21,7 +21,7 @@ import co.psyke.services.UserService;
 
 
 @RestController
-@RequestMapping("ingredients")
+@RequestMapping("user")
 @CrossOrigin(originPatterns = "*")
 @Validated
 public class UserController {
