@@ -16,6 +16,7 @@ import co.psyke.models.User;
 import co.psyke.repositories.UserRepository;
 import co.psyke.responses.UploadFileResponse;
 
+import static co.psyke.validation.UserValidation.fieldsValidation;
 @Service
 public class UploadService {
 	
@@ -49,7 +50,7 @@ public class UploadService {
 		int row=0; 
 		boolean error=false;
 		for(String s : lines){
-			StringBuilder output=new StringBuilder(512).append("row "+row+ ")");
+			StringBuilder output=new StringBuilder(512).append("row "+ (row++) + ")");
 			String [] fields = s.split(";"); 
 			if(fields.length!=4){
 				output.append("missing fields, it must be: name; last name; email;address");
@@ -65,8 +66,8 @@ public class UploadService {
 
 				u.setNome(fields[0]);
 				u.setCognome(fields[1]);
-				u.setIndirizzo(fields[2]);
-				u.setEmail(fields[3]);
+				u.setEmail(fields[2]);
+				u.setIndirizzo(fields[3]);
 
 				Long id=ur.save(u).getId();
 				output.append(id!=null? "added":"not added");
@@ -81,28 +82,5 @@ public class UploadService {
 		return ufr;
 	}
 
-	private static boolean fieldsValidation(String[]fields, StringBuilder sb) {
-		boolean flag=true;
-		if(fields[0].isEmpty()){
-			sb.append("empty first name");
-			flag=false;
-		}
-		if(fields[1].isEmpty()){
-			sb.append("empty last name");
-			flag=false;
-		}
-		if(fields[2].isEmpty()){
-			sb.append("empty email field");
-			flag=false;
-		}
-		if(!fields[2].matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")){
-			sb.append("empty email field");
-			flag=false;
-		}
-		if(fields[3].isEmpty()){
-			sb.append("empty address field");
-			flag=false;
-		}
-		return flag; 
-	}
+	
 }
