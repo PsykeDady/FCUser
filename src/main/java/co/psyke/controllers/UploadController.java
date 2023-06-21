@@ -2,13 +2,15 @@ package co.psyke.controllers;
 
 import java.io.File;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,8 +36,8 @@ public class UploadController {
 	 * @param file in csv format
 	 * @return 
 	 */
-	@PostMapping("/csvupload")
-	private ResponseEntity<UploadFileResponse> uploadFile(@RequestParam MultipartFile file) {
+	@PostMapping("addcsv")
+	private ResponseEntity<UploadFileResponse> uploadFile(@RequestBody @NotNull MultipartFile file) {
 
 		UploadFileResponse ufr=new UploadFileResponse();
 		
@@ -47,7 +49,6 @@ public class UploadController {
 		}
 
 		ufr = us.saveFromCsv(f);
-
 
 		return ufr.getStatus()>0 ? ResponseEntity.ok().body(ufr) : ResponseEntity.badRequest().body(ufr); 
 

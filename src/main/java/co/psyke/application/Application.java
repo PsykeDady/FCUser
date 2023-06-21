@@ -4,9 +4,13 @@ import java.util.Arrays;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "co.psyke")
+@EnableJpaRepositories("co.psyke.repositories")
+@EntityScan("co.psyke.models")
 public class Application {
 
 	public static void main(String[] args) {
@@ -20,5 +24,6 @@ public class Application {
 			System.out.println(beanName);
 		}
 	}
+
 	
 }

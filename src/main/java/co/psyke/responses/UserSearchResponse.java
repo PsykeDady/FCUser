@@ -2,6 +2,8 @@ package co.psyke.responses;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import co.psyke.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 @EqualsAndHashCode
+@ResponseBody
 public class UserSearchResponse {
 	
 	private List<User> byName;

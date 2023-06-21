@@ -2,6 +2,7 @@ package co.psyke.controllers;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,10 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.psyke.models.User;
@@ -21,7 +22,7 @@ import co.psyke.services.UserService;
 
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("/user")
 @CrossOrigin(originPatterns = "*")
 @Validated
 public class UserController {
@@ -36,8 +37,8 @@ public class UserController {
 		return new ResponseEntity<Long>(l, HttpStatus.OK);
 	}
 
-	@PostMapping("delete")
-	public ResponseEntity<Boolean> deleteUser(@RequestParam @NotEmpty Long id){
+	@PostMapping("delete/{id}")
+	public ResponseEntity<Boolean> deleteUser(@PathVariable @NotNull Long id){
 		Boolean removed = us.deleteUser(id);
 
 		// NOTE THAT: returning the value false does not necessarily mean that there is an error
@@ -54,15 +55,15 @@ public class UserController {
 		return new ResponseEntity<Boolean>(updated, HttpStatus.OK);
 	}
 
-	@GetMapping("get")
-	public ResponseEntity<User> getUser(@RequestParam @NotEmpty Long id){
+	@GetMapping("get/{id}")
+	public ResponseEntity<User> getUser(@PathVariable @NotNull Long id){
 		User user = us.getUser(id); 
 
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
-	@GetMapping("search")
-	public ResponseEntity<UserSearchResponse> searchUser (@RequestParam @NotEmpty String searchFilter){
+	@GetMapping("search/{searchFilter}")
+	public ResponseEntity<UserSearchResponse> searchUser (@PathVariable @NotEmpty String searchFilter){
 		UserSearchResponse usr = us.selectUsers(searchFilter); 
 		return new ResponseEntity<UserSearchResponse>(usr, HttpStatus.OK);
 	}
