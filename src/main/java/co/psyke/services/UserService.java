@@ -15,6 +15,9 @@ public class UserService {
 	@Autowired
 	private UserRepository ur; 
 
+	public List<User> list() {
+		return ur.findAll(); 
+	}
 
 	public Long addUser (User user){
 		User response = ur.save(user);	

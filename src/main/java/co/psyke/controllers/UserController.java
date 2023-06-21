@@ -1,5 +1,7 @@
 package co.psyke.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,6 +31,13 @@ public class UserController {
 
 	@Autowired
 	private UserService us; 
+
+	@GetMapping("/")
+	public ResponseEntity<List<User>> list(){
+		List<User> l = us.list();
+
+		return ResponseEntity.ok().body(l);
+	}
 
 	@PostMapping("add")
 	public ResponseEntity<Long> addUser(@RequestBody @Valid User user){
