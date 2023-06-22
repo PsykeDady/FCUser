@@ -25,17 +25,13 @@ public class UserService {
 		return response.id;
 	}
 
-	public boolean deleteUser(Long id){
-		if (! ur.existsById(id)) {
-			return false;
-		}
+	public void deleteUser(Long id){
 		ur.deleteById(id);
-		return !ur.existsById(id);
 	}
 
 	public boolean updateUser(User user){
 		if(ur.existsById(user.id)){
-			return false;
+			throw new IllegalStateException("not found");
 		}
 		User updatedUser= ur.save(user); 
 		return updatedUser.equals(user);

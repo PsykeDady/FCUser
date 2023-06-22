@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,21 +48,23 @@ public class UserController {
 		return new ResponseEntity<Long>(l, HttpStatus.OK);
 	}
 
-	@PostMapping("delete/{id}")
-	public ResponseEntity<Boolean> deleteUser(@PathVariable @NotNull Long id){
-		Boolean removed = us.deleteUser(id);
+	@DeleteMapping("delete/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable @NotNull Long id){
+		us.deleteUser(id);
 
-		// NOTE THAT: returning the value false does not necessarily mean that there is an error
-		//  but it can mean that there is no user with that id
-		return new ResponseEntity<Boolean>(removed, HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PostMapping("update")
+	@PutMapping("update")
 	public ResponseEntity<Boolean> updateUser(@RequestBody @Valid User user){
-		Boolean updated = us.updateUser(user); 
+		Boolean updated = false;  
+		try {
+			updated=us.updateUser(user);
+		} catch (IllegalStateException ie) {
+			return new ResponseEntity<Boolean>(false,HttpStatus.NOT_FOUND);
+		}
 
-		// NOTE THAT: returning the value false does not necessarily mean that there is an error
-		//  but it can mean that the older user is the same that the newest one
+		
 		return new ResponseEntity<Boolean>(updated, HttpStatus.OK);
 	}
 
