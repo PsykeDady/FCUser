@@ -30,7 +30,7 @@ public class UserService {
 	}
 
 	public boolean updateUser(User user){
-		if(ur.existsById(user.id)){
+		if(!ur.existsById(user.id)){
 			throw new IllegalStateException("not found");
 		}
 		User updatedUser= ur.save(user); 
